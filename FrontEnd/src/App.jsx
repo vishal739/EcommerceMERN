@@ -14,35 +14,34 @@ import {
 import CartPage from "./pages/CartPage";
 import Checkout from "./pages/Checkout";
 import ProductDetailPage from "./pages/ProductDetailPage";
+import Protected from "./features/auth/component/Protected";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <div>
-        <Home/>
-      </div>
+      <Home />
     ),
   },
   {
     path: "/login",
-    element: <div><LoginPage/></div>,
+    element:( <LoginPage />),
   },
   {
     path: "/signup",
-    element: <div><SignupPage/></div>,
+    element:( <SignupPage />),
   },
   {
     path: "/cart",
-    element: <div><CartPage/></div>,
+    element: (<Protected><CartPage /></Protected>),
   },
   {
     path: "/checkout",
-    element: <div><Checkout/></div>,
+    element: (<Protected><Checkout /></Protected>),
   },
   {
-    path: "/productdetail",
-    element: <div><ProductDetailPage/></div>,
+    path: "/productdetail/:id",
+    element: (<ProductDetailPage />),
   },
 ]);
 

@@ -9,6 +9,38 @@ export function fetchAllProducts() {
     resolve({ data });
   });
 }
+export function fetchProductById(id) {
+  // console.log("data fetching started");
+  return new Promise(async (resolve) => {
+    console.log("id",id);
+    const response = await fetch('http://localhost:8080/products/'+id);
+    console.log(response);
+    const data = await response.json()
+    //console.log("data fetched");
+    resolve({ data });
+  });
+}
+export function fetchAllCategories() {
+  // console.log("data fetching started");
+  return new Promise(async (resolve) => {
+    const response = await fetch('http://localhost:8080/categories');
+    console.log(response);
+    const data = await response.json()
+    console.log("Categories fetched: ",data);
+    resolve({ data });
+  });
+}
+
+export function fetchAllBrands() {
+  console.log("brands fetching started");
+  return new Promise(async (resolve) => {
+    const response = await fetch('http://localhost:8080/brands');
+    console.log(response);
+    const data = await response.json()
+    console.log("Brands fetched: ",data);
+    resolve({ data });
+  });
+}
 
 export function fetchAllProductsByFilters(filter,sort,pagination) {
   let queryString='';
@@ -39,17 +71,5 @@ export function fetchAllProductsByFilters(filter,sort,pagination) {
   });
 }
 
-// export function sortAllProducts(queryString) {
-
-//   // let queryString=`${option.sort}=${option.order}`;
-//   return new Promise(async (resolve) => {
-//     console.log("data sorting started,",queryString);
-//     const response = await fetch('http://localhost:8080/products?'+queryString);
-//     // console.log(response);
-//     const data = await response.json()
-//     console.log("data sorted");
-//     resolve({ data });
-//   });
-// }
 
 

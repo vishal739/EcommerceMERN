@@ -4,6 +4,8 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, ShoppingCartIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Link } from "react-router-dom";
+import { signOutAsync } from "../auth/authSlice";
+import { useDispatch } from "react-redux";
 
 const user = {
   name: 'Tom Cook',
@@ -17,18 +19,27 @@ const navigation = [
   { name: 'Contact us', href: '#', current: false },
   { name: 'About us', href: '#', current: false },
 ]
-const userNavigation = [
-  { name: 'Your Profile', href: '#' },
-  { name: 'Settings', href: '#' },
-  { name: 'Sign out', href: '#' },
-]
+
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 export const Navbar = ({ children }) => {
+  const dispatch = useDispatch();
+  const [signOut,setSignOut] = useState(null);
+  const handleSignOut= () =>{
+    console.log("signout")
+    dispatch(signOutAsync(null));
+    setSignOut(true);
+  }
+  const userNavigation = [
+    { name: 'Your Profile', href: '#' },
+    { name: 'Settings', href: '#' },
+    { name: 'Sign out', onClick: handleSignOut },
+  ]
   return (
     <>
+      {signOut && <Navigate to='/' replace={true}></Navigate>}
       <div className="min-h-full">
         <Disclosure as="nav" className="bg-gray-800">
           {({ open }) => (
@@ -103,15 +114,14 @@ export const Navbar = ({ children }) => {
                             {userNavigation.map((item) => (
                               <Menu.Item key={item.name}>
                                 {({ active }) => (
-                                  <a
-                                    href={item.href}
+                                  <button
                                     className={classNames(
                                       active ? 'bg-gray-100' : '',
                                       'block px-4 py-2 text-sm text-gray-700'
                                     )}
                                   >
                                     {item.name}
-                                  </a>
+                                  </button>
                                 )}
                               </Menu.Item>
                             ))}
@@ -177,8 +187,7 @@ export const Navbar = ({ children }) => {
                     {userNavigation.map((item) => (
                       <Disclosure.Button
                         key={item.name}
-                        as="a"
-                        href={item.href}
+                        // as="a"
                         className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                       >
                         {item.name}
