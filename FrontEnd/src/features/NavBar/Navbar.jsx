@@ -5,7 +5,8 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, ShoppingCartIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Link } from "react-router-dom";
 import { signOutAsync } from "../auth/authSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { selectItems } from "../cart/cartSlice";
 
 const user = {
   name: 'Tom Cook',
@@ -37,6 +38,8 @@ export const Navbar = ({ children }) => {
     { name: 'Settings', href: '#' },
     { name: 'Sign out', onClick: handleSignOut },
   ]
+  const items= useSelector(selectItems);
+  const itemlength = items.length;
   return (
     <>
       {signOut && <Navigate to='/' replace={true}></Navigate>}
@@ -85,7 +88,7 @@ export const Navbar = ({ children }) => {
                         >
                           <span className="absolute -inset-1.5" />
                           <span className="sr-only">View notifications</span>
-                          <span className="absolute inline-flex items-center rounded-md -top-2 left-4 bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">3</span>
+                        {itemlength!=0? <span className="absolute inline-flex items-center rounded-md -top-2 left-4 bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">{itemlength}</span>: ''}
                           <ShoppingCartIcon
                             className="h-6 w-6"
                             aria-hidden="true" />
@@ -178,7 +181,7 @@ export const Navbar = ({ children }) => {
                     >
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">View notifications</span>
-                      <span className="absolute inline-flex items-center rounded-md -top-2 left-4 bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">3</span>
+                    {itemlength!=0? <span className="absolute inline-flex items-center rounded-md -top-2 left-4 bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">{itemlength}</span>: ''}
                       <ShoppingCartIcon className="h-6 w-6" aria-hidden="true" />
                     </button>
                     </Link>

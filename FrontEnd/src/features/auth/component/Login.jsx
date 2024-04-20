@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { checkUserAsync, selectError, selectCheckUser } from '../authSlice'
@@ -13,18 +13,28 @@ const Login = () => {
     formState: { errors },
   } = useForm();
   const dispatch = useDispatch()
-  const validateUser = useSelector(selectCheckUser);
+  const isLoggedIn = useSelector(selectCheckUser);
   const checkError = useSelector(selectError);
+  const navigate = useNavigate();
+  const location= useLocation();
 
-  const handleSingin = () =>{
-    if(checkError){      
-      alert("Invalid Password")
+  // const handleSingin = () =>{
+  //   if(checkError){      
+  //     alert("Invalid Password")
+  //   }
+  // }
+  useEffect(()=>{
+    if(isLoggedIn){
+      navigate(location.state?.from || '/')
+    }else if(checkError){
+      alert(checkError.message);
     }
-  }
+  },[isLoggedIn,checkError]);
+
 
   return (
     <div>
-      {validateUser && <Navigate to='/' replace={true}></Navigate>}
+      {/* {isLoggedIn && <Navigate to='/' replace={true}></Navigate>} */}
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
@@ -42,6 +52,7 @@ const Login = () => {
             dispatch(
               checkUserAsync({ email: data.email, password: data.password })
             );
+
             // console.log(data);
           })} method="POST">
             <div>
@@ -94,7 +105,7 @@ const Login = () => {
             <div>
               <button
                 type="submit"
-                onClick={handleSingin}
+                // onClick={handleSingin}
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Sign in
@@ -104,7 +115,7 @@ const Login = () => {
 
           <p className="mt-10 text-center text-sm text-gray-500">
             New User?{' '}
-            <Link to="/signup" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+            <Link to="/signup" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500" >
               Register Now
             </Link>
           </p>

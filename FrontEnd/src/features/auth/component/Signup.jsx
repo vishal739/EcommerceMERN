@@ -1,8 +1,8 @@
-import React from 'react'
-import { Link, Navigate  } from 'react-router-dom'
+import {useEffect} from 'react'
+import { Link, useNavigate, useLocation  } from 'react-router-dom'
 import { useForm} from "react-hook-form"
 import { useDispatch, useSelector } from 'react-redux'
-import { createUserAsync, selectCheckUser } from '../authSlice'
+import { createUserAsync, selectCheckUser, selectError } from '../authSlice'
 
 const Signup = () => {
   const {
@@ -12,11 +12,19 @@ const Signup = () => {
     formState: { errors },
   } = useForm()
   const dispatch = useDispatch()
-  const user= useSelector(selectCheckUser);
-
+  const isLoggedIn= useSelector(selectCheckUser);
+  const checkError= useSelector(selectError);
+  const navigate= useNavigate()
+  const location= useLocation()
+  useEffect(()=>{
+    if(isLoggedIn){
+      navigate(location.state?.from || '/')
+    }else if(checkError){
+      alert(checkError.message);
+    }
+  },[isLoggedIn,checkError]);
   return (
     <div>
-      {user && <Navigate to='/' replace={true}></Navigate>}
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <img

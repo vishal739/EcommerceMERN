@@ -1,23 +1,48 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { fetchCount } from "./cartAPI";
+import { fetchCartById,addToCart,updateCart, deleteCart } from "./cartAPI";
 
 const initialState = {
-  value: 0,
+  items: [],
   status: "idle",
 };
 
 
-export const incrementAsync = createAsyncThunk(
-  "counter/fetchCount",
-  async (amount) => {
-    const response = await fetchCount(amount);
+export const addToCartAsync = createAsyncThunk(
+  "cart/addToCart",
+  async (items) => {
+    const response = await addToCart(items);
+    // The value we return becomes the `fulfilled` action payload
+    return response.data;
+  }
+);
+export const fetchCartByIdAsync = createAsyncThunk(
+  "cart/fetchCartById",
+  async (userId) => {
+    const response = await fetchCartById(userId);
+    // The value we return becomes the `fulfilled` action payload
+    return response.data;
+  }
+);
+export const deleteCartAsync = createAsyncThunk(
+  "cart/deleteCart",
+  async (itemId) => {
+    const response = await deleteCart(itemId);
+    // The value we return becomes the `fulfilled` action payload
+    return response.data;
+  }
+);
+export const updateCartAsync = createAsyncThunk(
+  "cart/updateCart",
+  async (data) => {
+    console.log("recieved quantity: ", data);
+    const response = await updateCart(data);
     // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
 );
 
-export const counterSlice = createSlice({
-  name: "counter",
+export const cartSlice = createSlice({
+  name: "cart",
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
@@ -28,20 +53,43 @@ export const counterSlice = createSlice({
   },
    extraReducers: (builder) => {
     builder
-      .addCase(incrementAsync.pending, (state) => {
+      .addCase(addToCartAsync.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(incrementAsync.fulfilled, (state, action) => {
+      .addCase(addToCartAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        state.value += action.payload;
+        state.items.push(action.payload);
+      })
+      .addCase(fetchCartByIdAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchCartByIdAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.items=action.payload;
+      })
+      .addCase(updateCartAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(updateCartAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        const index= state.items.findIndex(item=>item.id===action.payload.id);
+        state.items[index]=action.payload;
+      })
+      .addCase(deleteCartAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(deleteCartAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        const index= state.items.findIndex(item=>item.id===action.payload.id);
+        state.items.splice(index,1);
       });
   },
 });
 
-export const { increment } = counterSlice.actions;
+export const { increment } = cartSlice.actions;
 
 
-export const selectCount = (state) => state.counter.value;
+export const selectItems = (state) => state.cart.items;
 
 
-export default counterSlice.reducer;
+export default cartSlice.reducer;
